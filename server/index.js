@@ -18,12 +18,6 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-// app.get("/entity", function (req, res) { //"/entity" 是自定义的，用于显示在地址栏
-//   fs.readFile(__dirname + "/" + "entity.json", "utf-8", function (err, data) { // __dirname是文件夹的名，我们用fs读取json
-//     res.send(data) // 然后把读取的文件通过 res.end()发送给客户端
-//   })
-// });
-
 //上传文件
 app.post("/upload", uploadFile, function(req,res) {
   //req.body是经过uploadFile中间件进行处理后的,包含了表单中所有的提交内容
