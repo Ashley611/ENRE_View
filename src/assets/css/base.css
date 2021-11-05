@@ -1,0 +1,5 @@
+/*写一些页面初始样式，在App.vue中引入*/
+body{
+  padding: 0;
+  margin: 0;
+}
