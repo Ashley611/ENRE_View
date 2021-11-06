@@ -4,7 +4,7 @@
       <!--header栏-->
       <el-header style="font-size: 12px; margin-left: 120px">
         <el-form :inline="true"  class="demo-form-inline">
-          <el-form-item label="Category" style="margin-left: -300px;font-weight: bolder;">
+          <el-form-item label="Category" style="margin-left: -130px;font-weight: bolder;">
             <el-select
                 v-model="value"
                 placeholder="Entity"
@@ -43,7 +43,9 @@
       <el-main>
 <!--        <div id="entity_graph" style="width: 100%; height: 200px;"></div>-->
         <!--根据不同的选择展示不同实体(table) 默认不显示table,点击选择框后进行显示-->
-        <en-table :en_data="this.en_data" :str="this.search" :visible="this.show" style="height: 500px"></en-table>
+        <en-table
+            :en_data="this.en_data" :str="this.search" :visible="this.show"
+            style="margin-left: 80px;margin-top: -28px"></en-table>
       </el-main>
       </el-container>
   </div>

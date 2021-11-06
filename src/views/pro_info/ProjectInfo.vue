@@ -2,7 +2,7 @@
   <div id="project-info">
     <div>
       <p class="with-margin">Project Relative Info</p>
-      <el-divider></el-divider>
+<!--      <el-divider></el-divider>-->
       <!--标签块展示实体数量信息-->
       <show-entity-info>
         <div slot="mod">{{ this.modNum }}</div>
@@ -10,7 +10,7 @@
         <div slot="cls">{{ this.clsNum }}</div>
       </show-entity-info>
       <!--柱状图，展示某些实体数量-->
-      <div id="graph1" style="width: 100%; height: 400px; margin-top: 20px"></div>
+      <div id="graph1" style="height: 400px; margin-top: 80px;margin-left: 30px;"></div>
 <!--      <div id="graph2" style="width: 100%; height: 400px;"></div>-->
     </div>
   </div>
@@ -71,25 +71,39 @@ export default {
       // myChart.showLoading();
       let option;
       option = {
-        title: {
-          text: "Entity",
-          textStyle: {
-            color: "rgba(69, 82, 62, 1)",
-            fontSize: 25,
-            left: 'center'
-          }
-        },
+        // title: {
+        //   text: "Entity",
+        //   textStyle: {
+        //     color: "rgba(69, 82, 62, 1)",
+        //     fontSize: 20,
+        //     left: 'top'
+        //   }
+        // },
         tooltip: {
           show: true
         },
         xAxis: {
           type: 'category',
           data: ['Package', 'Module', 'Function', 'Class', 'Method'],
-          name: 'entity'
+          name: 'entity',
+          nameTextStyle: {
+            color: "black",
+            fontStyle:"normal",
+            fontWeight:"bolder",
+            fontFamily:'Arial',
+            fontSize: 15
+          }
         },
         yAxis: {
           type: 'value',
-          name: "num"
+          name: "num",
+          nameTextStyle: {
+            color: "black",
+            fontStyle:"normal",
+            fontWeight:"bolder",
+            fontFamily:'Arial',
+            fontSize: 15
+          }
         },
         series: [
           {
@@ -133,5 +147,11 @@ export default {
   margin-top: -10px;
   margin-bottom: -15px;
   text-align: center;
+}
+
+.el-divider{
+  height: 1px;
+  margin-left: 50px;
+
 }
 </style>

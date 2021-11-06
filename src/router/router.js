@@ -1,15 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import EntityDep from "@/views/dependency/childcomp/EntityDep";
 
 //懒加载
 const Home = () => import('@/views/home/Home');
 const ProjectInfo = () => import('@/views/pro_info/ProjectInfo')
 const Entity = () => import('@/views/entity/Entity')
-const Dep = () => import('@/views/dependency/Dep')
-const Module = () => import('@/views/dependency/childcomp/Module')
-const Function = () => import('@/views/dependency/childcomp/Function')
-const Class = () => import('@/views/dependency/childcomp/Class')
-const Method = () => import('@/views/dependency/childcomp/Method')
+
 
 Vue.use(Router)
 //解决编程式路由往同一地址跳转时会报错的情况
@@ -63,24 +60,24 @@ export default new Router({
         keepAlive:true
       }
     },
-    {
-      path: '/dep',
-      name: 'dependency',
-      component: Dep,
-      meta:{
-        title:'Dependency',
-        keepAlive:true
-      },
-    },
     // {
-    //   path: '/module',
-    //   name: 'module',
-    //   component: Module,
+    //   path: '/dep',
+    //   name: 'dependency',
+    //   component: Dep,
     //   meta:{
-    //     title:'Module',
+    //     title:'Dependency',
     //     keepAlive:true
-    //   }
+    //   },
     // },
+    {
+      path: '/dep/entity',
+      name: 'dep_entity',
+      component: EntityDep,
+      meta:{
+        title:'EntityDep',
+        keepAlive:true
+      }
+    },
     // {
     //   path: '/function',
     //   name: 'function',

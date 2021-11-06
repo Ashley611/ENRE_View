@@ -1,32 +1,45 @@
 <template>
-    <div v-show="this.show" :data="graph_data">
-      <el-button type="primary" icon="el-icon-share" round size="mini" @click="modGraph">生成Module依赖</el-button>
-      <el-input v-model="search" size="mini" placeholder="Input Module Name" @input="handleSearch"  style="margin-left: 40px;margin-right: -80px;width: 150px"></el-input>
-      <div id="dep_graph" style="height: 470px; width: 100%"></div>
-      <div id='edge_path' style="height:15px; width:500px;color:#A52A2A;font-size: 10px;margin-top: -15px;margin-left: -10px"></div>
-    </div>
+  <div>
+    <el-form :inline="true"  class="demo-form-inline">
+      <el-form-item label="Search" style="margin-left: -700px;font-weight: bolder;">
+        <el-input
+            v-model="search"
+            size="mini"
+            placeholder="输入实体名搜索"
+            suffix-icon="el-icon-search"
+            @input="handleSearch"
+        />
+      </el-form-item>
+    </el-form>
+    <div id="dep_graph" style="margin-left: 70px"></div>
+    <div id='edge_path' style="height:15px; width:500px;color:#A52A2A;font-size: 10px;margin-top: -500px;margin-left: 610px;"></div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Module",
+  name: "EntityDep",
   data() {
     return {
       myChart: {},
       map: {},
-      search: ''
+      search:""
     }
   },
   props: {
     graph_data: Object,
     show: Boolean
   },
+  mounted() {
+    this.modGraph()
+  },
   methods: {
     modGraph() {
       //清除画布内容
+      this.graph_data = this.$store.state.file;
       this.myChart = this.$echarts.init(document.getElementById('dep_graph'), null, {
         width: 1000,
-        height: 500
+        height: 600
       });
       this.myChart.showLoading();
       //let nodes = this.graph_data.variables;
@@ -44,19 +57,24 @@ export default {
         title: {
           text: 'Module Level'
         },
-        // tooltip: {
-        //   show: true,   //默认显示
-        //   showContent: true, //是否显示提示框浮层
-        //   trigger: 'item',//触发类型，默认数据项触发
-        //   triggerOn: 'click',//提示触发条件，mousemove鼠标移至触发，还有click点击触发
-        //   alwaysShowContent: false, //默认离开提示框区域隐藏，true为一直显示
-        //   showDelay: 0,//浮层显示的延迟，单位为 ms，默认没有延迟，也不建议设置。在 triggerOn 为 'mousemove' 时有效。
-        //   hideDelay: 200,//浮层隐藏的延迟，单位为 ms，在 alwaysShowContent 为 true 的时候无效。
-        //   enterable: false,//鼠标是否可进入提示框浮层中，默认为false，如需详情内交互，如添加链接，按钮，可设置为 true。
-        //   position: 'right',//提示框浮层的位置，默认不设置时位置会跟随鼠标的位置。只在 trigger 为'item'的时候有效。
-        //   confine: false,//是否将 tooltip 框限制在图表的区域内。外层的 dom 被设置为 'overflow: hidden'，或者移动端窄屏，导致 tooltip 超出外界被截断时，此配置比较有用。
-        //   transitionDuration: 0.4,//提示框浮层的移动动画过渡时间，单位是 s，设置为 0 的时候会紧跟着鼠标移动。
-        // },
+        tooltip: {
+          show: true,   //默认显示
+          showContent: true, //是否显示提示框浮层
+          trigger: 'item',//触发类型，默认数据项触发
+          triggerOn: 'mousemove',//提示触发条件，mousemove鼠标移至触发，还有click点击触发
+          alwaysShowContent: false, //默认离开提示框区域隐藏，true为一直显示
+          showDelay: 0,//浮层显示的延迟，单位为 ms，默认没有延迟，也不建议设置。在 triggerOn 为 'mousemove' 时有效。
+          hideDelay: 200,//浮层隐藏的延迟，单位为 ms，在 alwaysShowContent 为 true 的时候无效。
+          enterable: false,//鼠标是否可进入提示框浮层中，默认为false，如需详情内交互，如添加链接，按钮，可设置为 true。
+          position: 'right',//提示框浮层的位置，默认不设置时位置会跟随鼠标的位置。只在 trigger 为'item'的时候有效。
+          confine: false,//是否将 tooltip 框限制在图表的区域内。外层的 dom 被设置为 'overflow: hidden'，或者移动端窄屏，导致 tooltip 超出外界被截断时，此配置比较有用。
+          transitionDuration: 0.4,//提示框浮层的移动动画过渡时间，单位是 s，设置为 0 的时候会紧跟着鼠标移动。
+          formatter:function (params) {
+            if (params.dataType == "node") {
+              return params.data.category + ": " + params.data.simpleName+'<br/>';
+            }
+          }
+        },
         //工具箱
         toolbox: {
           //显示工具箱
@@ -74,9 +92,10 @@ export default {
               backgroundColor: "rgba(196, 205, 205, 1)",
               textareaBorderColor: "rgba(29, 101, 101, 1)",
               buttonColor: "rgba(86, 84, 98, 1)",
+              width:100,
               optionToContent: function (opt) {
                 let series = opt.series[0].data;
-                let table = '<table border="1" style="margin-left:20px;border-collapse:collapse;font-size:12px;text-align:center"><tbody><tr class="dataViewTr">'
+                let table = '<table border="1" style="width:100px;margin-left:10px;border-collapse:collapse;font-size:12px;text-align:center"><tbody><tr class="dataViewTr">'
                     + '<td style="font-weight: bolder; font-size: 15px;">' + "id" + '</td>'
                     + '<td style="font-weight: bolder; font-size: 15px">' + 'simpleName' + '</td>'
                     + '<td style="font-weight: bolder; font-size: 15px">qualifiedName</td>'
@@ -98,7 +117,9 @@ export default {
           {
             data: categories.map(function (a) {
               return a.name;
-            })
+            }),
+            icon: "circle",
+            top: 4,
           }
         ],
         series: [{
@@ -125,7 +146,6 @@ export default {
           itemStyle: {
             normal: {
               //opacity: 1,
-              //鼠标放上去有阴影效果
               emphasis: {
                 shadowColor: "red",
                 shadowOffsetX: 0,
@@ -150,7 +170,6 @@ export default {
             show: true,
             position: 'inside',
             formatter: function (x) {
-              //return x.data.name;
               //节点上显示node id
               return x.data.id;
             },
@@ -192,36 +211,29 @@ export default {
       let allNodes = this.graph_data.variables;//获得所有节点
       let nodesOption = option.series[0].data;//获得所有Module节点的数组
       let linksOption = option.series[0].links;//获得所有连接的数组
+
       let data = params.data; //当前选择的某一节点
       let linksNodes = [];  //存放某节点的子节点
-      let categoryLength = option.series[0].categories.length;//最后一个种类不展开，把prop或para设置为最后一种
 
-      /**
-       判断当前节点的category是否为最终子节点，如果是，则弹出该节点的label
-       */
-      if (data.category == data.category[(categoryLength - 1)]) {
-        alert(data.label);
+      //获得子节点数组
+      for (let m in linksOption) {
+        if (linksOption[m].source == data.id) {
+          linksNodes.push(linksOption[m].target);
+        }
       }
 
       if (data !== null && data !== undefined) {
         //判断所选节点的flag,如果为真，则表示要展开数据,如果为假，则表示要折叠数据
         if (data.flag) {
           //展开数据
-          //获得子节点数组
-          for (let m in linksOption) {
-            if (linksOption[m].source == data.id) {
-              linksNodes.push(linksOption[m].target);
-            }
-          }
-          //把当前点击节点和子孙节点保存到Map中，折叠时可以直接遍历Map
-          //this.cur_childNodes.set(data,linksNodes)
-          //遍历子节点数组,设置对应的option属性
-          if (linksNodes != null && linksNodes != undefined) {
-            let nodeIds = new Set();
-            nodesOption.forEach(item => {
-              nodeIds.add(item.id);
-            })
+          //保存当前节点集合id
+          let nodeIds = new Set();
+          nodesOption.forEach(item => {
+            nodeIds.add(item.id);
+          })
 
+          //遍历子节点数组,设置对应的option属性
+          if (linksNodes.length > 0) {
             for (let p in linksNodes) {
               allNodes.forEach(item => {
                 if (item.id == linksNodes[p]) {
@@ -233,6 +245,8 @@ export default {
                 }
               })
             }
+          } else {
+            alert("已显示所有相关依赖信息")
           }
 
           for (let p in linksNodes) {
@@ -252,18 +266,10 @@ export default {
           //重绘
           //this.myChart.clear();  //这一步必不可少，否则二次渲染报错
           this.myChart.setOption(option);
-        } else {
-          //折叠数据
-          //遍历连接关系数组,最终获得所选择节点的所有子孙节点
-          for (let m in linksOption) {
-            if (linksOption[m].source == data.id) {
-              linksNodes.push(linksOption[m].target);//获得子节点数组
-            }
-          }
-          //22  25  14  应该删除非Module的item
+        } else {  //折叠数据
           //遍历子节点数组,设置对应的option属性
           //nodesOption中直接删除对应节点
-          if (linksNodes != null && linksNodes != undefined) {
+          if (linksNodes.length > 0) {
             for (let p in linksNodes) {
               nodesOption.forEach(item => {
                 if (item.id == linksNodes[p]) {
@@ -382,7 +388,7 @@ export default {
                 })
               }
             }
-           // console.log(nodesOption)
+            // console.log(nodesOption)
           }
           for (let k in linksOption) {
             if (linksOption[k].source == nodesOption[m].id) {
@@ -435,7 +441,5 @@ export default {
 </script>
 
 <style scoped>
-/*.el-main{*/
-/*  height: 100%;*/
-/*}*/
+
 </style>

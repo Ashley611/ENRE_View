@@ -4,19 +4,20 @@
         <el-header>
           <NavBar></NavBar>
         </el-header>
+
         <div class="aside">
-          <el-aside>
+          <el-aside width="160px">
             <AsideBar />
           </el-aside>
         </div>
 
-      <div class="main">
-        <el-main>
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
-        </el-main>
-      </div>
+        <div class="main">
+          <el-main>
+            <keep-alive>
+              <router-view></router-view>
+            </keep-alive>
+          </el-main>
+        </div>
     </el-container>
   </div>
 
@@ -37,36 +38,40 @@ export default {
 </script>
 
 <style scoped>
+/*.el-header {*/
+/*  background-color: rgb(84, 92, 100);*/
+/*  text-align: left;*/
+/*  line-height: 60px;*/
+/*}*/
+
 .el-header {
+  position: relative;
+  width: 100%;
+  height: 60px;
   background-color: rgb(84, 92, 100);
-  text-align: left;
   line-height: 60px;
+}
+
+.el-aside {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 60px;
+  bottom: 0;
+  background-color: rgb(84, 92, 100);
+  overflow: hidden;
+}
+
+.el-main {
+  position: absolute;
+  left: 90px;
+  right: 0;
+  top: 60px;
+  bottom: 0;
 }
 
 .el-container {
   height: 100%;
-}
-/*.el-aside {*/
-/*  height: 100%;*/
-/*  overflow-x: hidden;*/
-/*  !*overflow-y: scroll;*!*/
-/*  display: block;*/
-/*  position: absolute;*/
-/*  left: 0;*/
-/*  top:60px;*/
-/*  bottom: 0;*/
-/*  background-color: rgb(84, 92, 100);*/
-/*}*/
-
-.aside {
-  width: 149px;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top:60px;
-  bottom: 0;
-  background-color: rgb(84, 92, 100);
-  overflow: hidden;
 }
 
 .main {
@@ -76,4 +81,5 @@ export default {
   margin-right: 30px;
   text-align: center;
 }
+
 </style>
