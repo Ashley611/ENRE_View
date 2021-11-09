@@ -85,7 +85,7 @@ export default {
 
       home.uploadFile(formData)
           .then(r => {
-            // console.log(r.data)
+            //console.log(r.data)
             this.$message.success(`文件上传成功`);
             //文件上传成功后跳转到project-info页面
             this.$router.replace({

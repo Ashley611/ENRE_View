@@ -40,9 +40,24 @@ export default {
   },
   methods: {
     getParams() {
-      this.file_path = this.$route.query.object;
-      project_info.findFile(this.file_path).then(r => {
-        this.$store.commit('storeFile',r.data)
+      //this.file_path = this.$route.query.object;
+      //接收到文件数组，判断是否有entitydep.json，有的话先展示，再把文件数组保存到store中
+      let file;
+      let file_list = this.$route.query.object;
+      //把上传的全部文件保存在store中
+      this.$store.commit('storeFileList',file_list)
+
+      //这里可直接在store中获取对应文件
+      let en_dep_file = this.$store.state.entity_dep_file;
+
+      if(en_dep_file !== undefined) {
+        file = en_dep_file
+      }
+
+      //这里请求的是entity_dep_file的文件内容
+      project_info.findFile(file).then(r => {
+        //把该文件内容保存到store中
+        this.$store.commit('storeEnDepFile',r.data)
         this.entityNum = r.data.entityNum;
 
         let pkgNum = this.entityNum[0].Package;
@@ -64,6 +79,7 @@ export default {
         console.log(e)
       })
     },
+
     drawBar(value) {
       // 初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('graph1'));

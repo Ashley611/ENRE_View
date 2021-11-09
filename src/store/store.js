@@ -5,12 +5,29 @@ Vue.use(Vuex)
 
 let store = new Vuex.Store({
   state: {
-      file:{}
+      file:{},
+      file_list:[],
+      entity_dep_file:{},
+      his_dep_file:{},
+      con_dep_file:{}
   },
   mutations: {
     //方法
+    storeFileList(state,file_list) {
+      file_list.forEach(item => {
+        if(item.originalname.endsWith("_endep_111.json")) {
+          state.entity_dep_file = item;
+        }
+        if(item.originalname.endsWith("_hisdep_222.json")) {
+          state.his_dep_file = item;
+        }
+        if(item.originalname.endsWith("_condep_333.json")) {
+          state.con_dep_file = item;
+        }
+      })
+    },
     //从其他地方拿到这个文件，赋值到公共属性file中
-    storeFile(state,file) {
+    storeEnDepFile(state,file) {
       //在这里对文件修改，添加必要属性
       //对variable添加draggable,ignore,flag,itemStyle
       // file = this.commit("getNewFile",file);

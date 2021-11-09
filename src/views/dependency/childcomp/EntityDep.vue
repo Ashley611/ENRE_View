@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <h2 v-if="this.show === false">未上传相关实体依赖文件，无法获取信息</h2>
+  <div v-else>
     <el-form :inline="true"  class="demo-form-inline">
       <el-form-item label="Search" style="margin-left: -700px;font-weight: bolder;">
         <el-input
@@ -17,41 +18,103 @@
 </template>
 
 <script>
+import dependency from "@/api/dependency";
+
 export default {
   name: "EntityDep",
   data() {
     return {
       myChart: {},
       map: {},
-      search:""
+      search:"",
+      show:true,
+      nodeArr:[],
+      edgeArr:[],
     }
   },
-  props: {
-    graph_data: Object,
-    show: Boolean
+  computed: {
+
   },
   mounted() {
-    this.modGraph()
+    this.getParams();
   },
   methods: {
-    modGraph() {
-      //清除画布内容
-      this.graph_data = this.$store.state.file;
+    getParams() {
+      let en_dep_file = this.$store.state.entity_dep_file;
+      if(en_dep_file.originalname == undefined) {
+        //未上传文件
+        this.show = false;
+      } else {
+        this.show = true;
+        //向后台发送请求读取文件，获取文件内容
+        dependency.find_en_dep_file(en_dep_file).then(r => {
+          //在这里对文件格式重新修改，方便展示
+          let finalFile = this.rewriteFile(r.data);
+          this.modGraph(finalFile)
+        }).catch(e => {
+          console.log(e)
+          this.$message.error(`获取失败`)
+        })
+      }
+    },
+
+    rewriteFile(file) {
+      let itemMap = new Map();
+      itemMap.set("opacity",0.8);
+      itemMap.set("shadowColor","white");
+      itemMap.set("shadowBlur",0);
+      itemMap.set("borderColor","white");
+      //map转换为json
+      let obj1 = this.mapToObj(itemMap);
+      // let obj1= Object.create(null);
+      // itemMap.forEach(function (value, key, map){
+      //   obj1[key] = value;
+      // })
+      for(let node of file.variables) {
+        node.itemStyle = obj1;
+        node.ignore = true;
+        node.flag = true;
+      }
+
+      //给cells写入lineStyle
+      let obj = new Map();
+      obj.set("opacity",0.8);
+      obj.set("width",1.5)
+      let obj2 = this.mapToObj(itemMap);
+      // let obj2= Object.create(null);
+      // obj.forEach(function (value, key, map){
+      //   obj2[key] = value;
+      // })
+      for(let cell of file.cells) {
+        cell.lineStyle = obj2
+      }
+      file = JSON.parse(JSON.stringify(file))
+      return file;
+    },
+
+    mapToObj(map) {
+      let obj= Object.create(null);
+      map.forEach(function (value, key, map){
+        obj[key] = value;
+      })
+      return obj;
+    },
+
+    modGraph(file) {
       this.myChart = this.$echarts.init(document.getElementById('dep_graph'), null, {
         width: 1000,
         height: 600
       });
       this.myChart.showLoading();
-      //let nodes = this.graph_data.variables;
       let nodes = [];
       //这里应该筛选所有的Module类型的node
-      this.graph_data.variables.forEach(item => {
+      file.variables.forEach(item => {
         if (item.category == "Module") {
           nodes.push(item)
         }
       });
-      let links = this.graph_data.cells;
-      let categories = this.graph_data.categories;
+      let links = file.cells;
+      let categories = file.categories;
       this.myChart.hideLoading();
       let option = {
         title: {
@@ -199,16 +262,16 @@ export default {
         if (params.componentType === "series") {
           if (params.seriesType === "graph") {
             if (params.dataType === "node") {
-              this.openOrFold(params);
+              this.openOrFold(params,file);
             }
           }
         }
       })
     },
 
-    openOrFold(params) {
+    openOrFold(params,file) {
       let option = this.myChart.getOption();//获取已生成图形的Option
-      let allNodes = this.graph_data.variables;//获得所有节点
+      let allNodes = file.variables;//获得所有节点
       let nodesOption = option.series[0].data;//获得所有Module节点的数组
       let linksOption = option.series[0].links;//获得所有连接的数组
 

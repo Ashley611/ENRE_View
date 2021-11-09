@@ -8,7 +8,11 @@
         text-color="#fff"
         active-text-color="#ffd04b"
         router>
-      <el-menu-item index="/home">
+<!--      <el-menu-item index="/home">-->
+<!--        <i class="el-icon-s-home"></i>-->
+<!--        <span slot="title">Home</span>-->
+<!--      </el-menu-item>-->
+      <el-menu-item index="/home1">
         <i class="el-icon-s-home"></i>
         <span slot="title">Home</span>
       </el-menu-item>
