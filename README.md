@@ -1,34 +1,24 @@
 # enre_view
-
-## Project setup
+## How to start enre_view?
+## 1)install pkg
 ```
 npm install
 ```
-
-### start server,run node index.js in server directory
+### 2)start server,run node index.js in server directory
 ```
 node index.js
 ```
-
-### Compiles and hot-reloads for development
+### 3)Compiles and hot-reloads for development,run npm run serve in root directory
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## How to use enre_view?
+Upload the file in samples directory to EntityDep, then you can check the entity and dependency the file contains.
+Ex: 
+1) JS:
+   use percy.json in samples directory
+   Entity:
+   ![image](https://user-images.githubusercontent.com/71134935/195268971-f056a500-793f-4a2a-ad7b-3f7ac378c7d3.png)
+   Dependency:
+   ![dep](https://user-images.githubusercontent.com/71134935/195270697-0b151531-3311-4aae-ac6b-fb42254b61b5.png)
+   ![dep_part](https://user-images.githubusercontent.com/71134935/195270747-c0f2ff7d-e98a-445d-b62f-f24344634f05.png)
